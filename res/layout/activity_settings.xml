@@ -1,0 +1,84 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    
+    
+    <PreferenceCategory 
+        android:title="설정"
+        android:key="pref_settings">
+        <CheckBoxPreference
+            android:key="use_javascript"
+            android:title="자바스크립트 사용"
+            android:summary="자바스크립트 사용을 허하라"
+            android:defaultValue="true" />
+        <CheckBoxPreference
+            android:key="use_cookie"
+            android:title="쿠키 허용"
+            android:summary="쿠키 사용을 허하라"
+            android:defaultValue="true" />
+        
+            
+        <Preference 
+            android:key="font_size"
+            android:title="폰트 크기"
+            android:summary="기본값은 16입니다"> 
+            <intent
+            android:targetClass="com.mymy.randomweb.FontActivity"
+            android:targetPackage="com.mymy.randomweb"/>
+        </Preference> 
+        
+    </PreferenceCategory>
+    
+    <PreferenceScreen
+        android:key="clear_personal_info"
+        android:title="개인정보 삭제"
+        android:persistent="false">
+        <PreferenceCategory
+            android:title="개인정보 삭제"
+        	android:key="pref_clear_info"
+        	android:persistent="false">
+            
+	        <Preference 
+	            android:key="clear_cache"
+	            android:title="캐쉬 삭제"
+	            android:persistent="false" />
+	        
+	        <Preference 
+	            android:key="clear_cookie"
+	            android:title="쿠키 삭제"
+	            android:persistent="false" />
+	        
+	        <Preference 
+	            android:key="clear_foam"
+	            android:title="저장된 양식 삭제"
+	            android:persistent="false" />
+		
+        </PreferenceCategory>
+    </PreferenceScreen>
+    
+    <PreferenceScreen
+        android:key="dev_info"
+        android:title="개발 정보"
+        android:persistent="false">
+        <PreferenceCategory
+            android:title="개발 정보"
+        	android:key="pref_dev_info"
+        	android:persistent="false">
+            
+	        <Preference 
+	            android:key="clear_cache"
+	            android:title="이메일@gmail.com"
+	            android:persistent="false" />
+	        
+	        <Preference 
+	            android:key="clear_cookie"
+	            android:title="야호"
+	            android:persistent="false" />
+	        
+	        <Preference 
+	            android:key="clear_foam"
+	            android:title="개발!!"
+	            android:persistent="false" />
+		
+        </PreferenceCategory>
+    </PreferenceScreen>
+    
+</PreferenceScreen>

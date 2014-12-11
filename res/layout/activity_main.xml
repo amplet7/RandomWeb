@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+	
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+    android:id="@+id/frame1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">	
+    
+    <com.mymy.randomweb.ObservableWebView 
+	        android:id="@+id/webview"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent" >
+	         
+	</com.mymy.randomweb.ObservableWebView>
+    
+    <LinearLayout 
+        android:id="@+id/linear1"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:visibility="visible" >
+        
+        <LinearLayout
+            android:id="@+id/linear2"
+	        android:orientation="horizontal"
+	        android:layout_width="match_parent"
+	        android:layout_height="50dp"
+	        android:background="@drawable/bird1"
+	        >
+ 
+	        <EditText
+	            android:id="@+id/edit_Url"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:inputType="textUri"
+	            android:layout_weight="1"
+	            android:singleLine="true"
+	            android:layout_gravity="center_vertical"
+	            android:hint="" />
+	        
+	        <ImageView
+			    android:id="@+id/favicon1"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:contentDescription="favicon"
+			    android:src="@drawable/ic_launcher" />
+	        
+	        
+	        <Button
+	            android:id="@+id/btn_go"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_weight="0"
+	            android:text="@string/btn_go"
+	            android:visibility="gone"
+	            />
+        </LinearLayout>
+    	
+        <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:max="100"
+        android:progress="0"
+        android:secondaryProgress="1"
+        android:visibility="invisible"
+        style="?android:attr/progressBarStyleHorizontal"
+        />   
+        
+    </LinearLayout>
+    
+  
+     
+</FrameLayout>
+
+	

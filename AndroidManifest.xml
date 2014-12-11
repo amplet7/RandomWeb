@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.mymy.randomweb"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <uses-sdk
+        android:minSdkVersion="9"
+        android:targetSdkVersion="21" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:manageSpaceActivity=".ActivityOfMyChoice"
+        android:theme="@style/Theme.AppCompat.Light.DarkActionBar" >
+ <!-- 즐겨찾기 삭제 안되도록 : 액티비티 구현할것 -->
+        <activity
+            android:name=".WebViewActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".SiteRegisterActivity"
+            android:label="@string/title_activity_site_register"
+            android:parentActivityName=".WebViewActivity"
+            android:windowSoftInputMode="adjustResize" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.mymy.randomweb.WebViewActivity" />
+            <!-- 홈버튼 생성을 위한 -->
+        </activity>
+        <activity
+            android:name=".SiteManagerActivity"
+            android:label="@string/title_activity_site_manager"
+            android:parentActivityName=".WebViewActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.mymy.randomweb.WebViewActivity" />
+            <!-- 홈버튼 생성을 위한 -->
+        </activity>
+        <activity
+            android:name=".SiteEditActivity"
+            android:label="@string/title_activity_site_edit"
+            android:windowSoftInputMode="adjustResize" >
+
+            <!-- 소프트키보드 뜰 때 레이아웃 재조정 -->
+        </activity>
+        <activity
+            android:name=".CustomWebView"
+            android:label="@string/title_activity_custom_web_view" >
+        </activity>
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:parentActivityName=".WebViewActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.mymy.randomweb.WebViewActivity" />
+        </activity>
+        <activity
+            android:name=".DevInfoActivity"
+            android:label="@string/title_activity_dev_info"
+            android:parentActivityName=".SettingsActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.mymy.randomweb.SettingsActivity" />
+        </activity>
+        <activity
+            android:name=".FontActivity"
+            android:label="@string/title_activity_font"
+            android:parentActivityName=".SettingsActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.mymy.randomweb.SettingsActivity" />
+        </activity>
+        <activity
+            android:name=".ManageSpaceActivity"
+            android:label="@string/title_activity_manage_space" >
+        </activity>
+    </application>
+
+</manifest>
+
