@@ -1,14 +1,17 @@
 package com.mymy.randomweb;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Random;
 
 import android.support.v7.app.ActionBarActivity;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,12 +23,14 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 public class SiteManagerActivity extends ActionBarActivity {
 
 	private static final String TAG = "SiteManager";
 	
+	ArrayList<String> Groups;
 	ArrayList<String> Items;
 	ArrayAdapter<String> Adapter;
 	ListView list;
@@ -44,10 +49,56 @@ public class SiteManagerActivity extends ActionBarActivity {
 		setContentView(R.layout.activity_site_manager);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true); // 홈 액티비티로 가는 홈 버튼 활성화
 		
-		Items = new ArrayList<String>();
-		String[] str1 = new String[WebViewActivity.SITE_LIMIT]; // SITE_LIMIT개까지만 랜덤 사이트 받음
-		int i = 0;
+		ContextWrapper cw = new ContextWrapper(this);
+        File dir = cw.getFilesDir();
+        
+        String dirPath = dir.getAbsolutePath();
+		File newfile = new File(dirPath + "/group_재미로.txt");
 		
+		try{
+			
+			Log.v(TAG, "im in MENU_FAVOR - !file.exists()");
+			FileOutputStream fos1 = openFileOutput("group_재미로.txt",Context.MODE_APPEND);
+			FileOutputStream fos2 = openFileOutput("group_예아.txt",Context.MODE_APPEND);
+			
+			String firstline = "group_재미로.txt\n";
+			fos1.write(firstline.getBytes());
+			fos1.close();
+			fos2.close();
+			
+		}catch(Exception e){
+			System.err.println(e);
+			System.exit(1);
+		}
+		
+		
+		// group_ 으로 시작하는 파일목록을 스피너에 추가
+		Groups = new ArrayList<String>();
+		
+		Spinner spin1 = (Spinner)findViewById(R.id.spinner1);
+		spin1.setPrompt("그룹을 선택하세요");
+	
+        String[] files= dir.list(new FilenameFilter(){
+			@Override
+			public boolean accept(File dir, String filename) {
+				// TODO Auto-generated method stub
+				return filename.startsWith("group_");
+			}
+        });
+        
+        for(int i=0; i < files.length; i++){
+        	Groups.add(files[i]);
+        	
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, Groups);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spin1.setSelection(0);
+        spin1.setAdapter(adapter);
+        
+        Items = new ArrayList<String>();
+		String[] str1 = new String[WebViewActivity.SITE_LIMIT]; // SITE_LIMIT개까지만 랜덤 사이트 받음
+		
+        int i = 0;
 		try{
 			FileInputStream fis = openFileInput("URLs.txt");
 			BufferedReader reader = new BufferedReader(new InputStreamReader(fis));

@@ -86,7 +86,7 @@ public class WebViewActivity extends ActionBarActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        clearApplicationCache(null);
+        
         getSupportActionBar().hide();
         et_InputUrl = (EditText)findViewById(R.id.edit_Url);
         mWebView = (ObservableWebView)findViewById(R.id.webview);
@@ -532,6 +532,14 @@ public class WebViewActivity extends ActionBarActivity{
             
         }
     }
+    
+    
+    
+    
+    
+    
+    
+    /*
     ContextWrapper cw = new ContextWrapper(this);
     private void clearApplicationCache(java.io.File dir){
         if(dir==null)
@@ -558,7 +566,7 @@ public class WebViewActivity extends ActionBarActivity{
         catch(Exception e){}
     }
    
-    	
+    	*/
     	
 
     
