@@ -10,8 +10,10 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import android.support.v7.app.ActionBarActivity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,6 +25,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -33,14 +36,17 @@ public class SiteManagerActivity extends ActionBarActivity {
 	
 	ArrayList<String> Groups;
 	ArrayList<String> Items;
-	ArrayAdapter<String> Adapter;
+	ArrayAdapter<String> siteAdapter;
+	ArrayAdapter<String> groupAdapter;
 	ListView list;
+	String curGroup = "";
+	int curPosition = 0; // 그룹어레이의 현재 포지션
 	
 	// in onContextItemSelected
 	private String topStr = new String(); // 현재 position 기준으로 파일의 위쪽 내용
     private String curStr = new String(); // 기준
     private String bottomStr = new String(); // 파일의 아래쪽 내용
-    int pos = 0; // 리스트뷰에서 컨텍스트 메뉴 롱클릭 된 항목 위치값
+    int pos = 0; // 리스트어레이 현재 포지션. 리스트뷰에서 컨텍스트 메뉴 롱클릭 된 항목 위치값
     
 	
 	
@@ -85,30 +91,36 @@ public class SiteManagerActivity extends ActionBarActivity {
         });
         
         for(int i=0; i < files.length; i++){
-        	Groups.add(files[i]);
-        	
+        	Groups.add(files[i].replaceFirst("group_", "").replaceFirst("(.txt)$", ""));
         }
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line, Groups);
-        //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        groupAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line, Groups);
+        //groupAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spin1.setSelection(0);
-        spin1.setAdapter(adapter);
+        curGroup = Groups.get(0);
+        curPosition = 0;
+        spin1.setAdapter(groupAdapter);
         
         spin1.setOnItemSelectedListener(new OnItemSelectedListener(){
         	public void onItemSelected(AdapterView<?> parent, View view, 
         			int position, long id){
+        		
+        		curPosition = position;
+        		
         		Items = new ArrayList<String>();
-        		String[] str1 = new String[WebViewActivity.SITE_LIMIT]; // SITE_LIMIT개까지만 랜덤 사이트 받음
+        		ArrayList<String> strArray1 = new ArrayList<String>(); 
         		
                 int i = 0;
         		try{
-        			FileInputStream fis = openFileInput(files[position]);
+        			FileInputStream fis = openFileInput("group_" + Groups.get(position) + ".txt");
         			BufferedReader reader = new BufferedReader(new InputStreamReader(fis));
         			String line = reader.readLine();
         			Log.v(TAG, "file 첫번째 줄 : " + line);
         			String temp1;
-        			while((str1[i] = reader.readLine()) != null){
-        				Log.v(TAG, "onCreate, while : " + str1[i]);
-        				String[] splstr = str1[i].split(" .1.1. .1.1. ");
+        			String readTemp = "";
+        			while((readTemp = reader.readLine()) != null){
+        				strArray1.add(readTemp); 
+        				Log.v(TAG, "onCreate, while : " + strArray1.get(i));
+        				String[] splstr = readTemp.split(" .1.1. .1.1. ");
         				if (splstr[0].length() > 50){
         					temp1 = splstr[0].substring(0, 50) + " . . . ";
         				}else{
@@ -126,9 +138,9 @@ public class SiteManagerActivity extends ActionBarActivity {
         			System.exit(1);
         		}
 
-        		Adapter = new ArrayAdapter<String>(SiteManagerActivity.this, android.R.layout.simple_list_item_1, Items);
+        		siteAdapter = new ArrayAdapter<String>(SiteManagerActivity.this, android.R.layout.simple_list_item_1, Items);
         		list = (ListView)findViewById(R.id.list1);
-        		list.setAdapter(Adapter);
+        		list.setAdapter(siteAdapter);
         		list.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         		
         		list.setOnItemClickListener(mItemClickListener);
@@ -143,11 +155,10 @@ public class SiteManagerActivity extends ActionBarActivity {
 			}
         });
         
-        
-        
+        Button btn_delete = (Button)findViewById(R.id.btn_delete_group);
+        btn_delete.setOnClickListener(onClickListener1);
         
 	}
-	
 	
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo){
 		super.onCreateContextMenu(menu, v, menuInfo);
@@ -171,11 +182,9 @@ public class SiteManagerActivity extends ActionBarActivity {
 	    curStr = "";
 	    bottomStr = "";
 	    
-	    
 	    try{
-	    	
 		    int listCount = list.getCount();
-			FileInputStream fis = openFileInput("URLs.txt");
+			FileInputStream fis = openFileInput("group_" + Groups.get(curPosition) + ".txt");
 			BufferedReader reader = new BufferedReader(new InputStreamReader(fis));
 			String line = reader.readLine(); //첫 줄
 			topStr = topStr + line + "\n";
@@ -214,8 +223,6 @@ public class SiteManagerActivity extends ActionBarActivity {
 			System.exit(1);
 		}
 	
-	
-	    
 	    
 		switch(item.getItemId()){
 		case 1: //edit
@@ -233,7 +240,8 @@ public class SiteManagerActivity extends ActionBarActivity {
 		case 2: //delete
 			
 			try{
-				FileOutputStream fos = openFileOutput("URLs.txt",Context.MODE_PRIVATE);
+				FileOutputStream fos = openFileOutput("group_" + Groups.get(curPosition) + ".txt" ,
+						Context.MODE_PRIVATE);
 				fos.write(topStr.getBytes()); // 현재 pos 줄을 제외하고 쓰기
 				fos.write(bottomStr.getBytes());
 				fos.close();
@@ -242,7 +250,7 @@ public class SiteManagerActivity extends ActionBarActivity {
 				System.exit(1);
 			}
 			Items.remove(pos);
-	    	Adapter.notifyDataSetChanged();
+	    	siteAdapter.notifyDataSetChanged();
 			
 			
 			
@@ -290,7 +298,8 @@ public class SiteManagerActivity extends ActionBarActivity {
 			    	Log.v(TAG, "onActivityResult top : " + topStr + "/// cur : " + 
 			    			curStr + "/// bottom : " + bottomStr);
 			    	try{
-			    		FileOutputStream fos = openFileOutput("URLs.txt",Context.MODE_PRIVATE);
+			    		FileOutputStream fos = openFileOutput("group_" + Groups.get(curPosition) + ".txt",
+			    				Context.MODE_PRIVATE);
 	            		fos.write(topStr.getBytes());
 	            		fos.write(modifiedStr.getBytes());
 	            		fos.write(bottomStr.getBytes());
@@ -307,7 +316,7 @@ public class SiteManagerActivity extends ActionBarActivity {
             				Toast.LENGTH_SHORT).show();
             		Items.remove(pos);
             		Items.add(pos, retTitle);
-            		Adapter.notifyDataSetChanged();
+            		siteAdapter.notifyDataSetChanged();
             		
 			    }
             		
@@ -322,7 +331,6 @@ public class SiteManagerActivity extends ActionBarActivity {
 	
 	
 	
-	
 	AdapterView.OnItemClickListener mItemClickListener = 
 			new AdapterView.OnItemClickListener() {
 		
@@ -332,7 +340,48 @@ public class SiteManagerActivity extends ActionBarActivity {
 				mes = "Select Item = " + Items.get(position);
 				Toast.makeText(SiteManagerActivity.this, mes, Toast.LENGTH_SHORT).show();
 				}
-
-			
 			};
+			
+			
+	View.OnClickListener onClickListener1 = new View.OnClickListener() {
+        
+        @Override
+        public void onClick(View v) {
+            switch(v.getId()) {
+            
+            case R.id.btn_delete_group: // 그룹 삭제
+            	
+            	new AlertDialog.Builder(SiteManagerActivity.this).setTitle("Question")
+            	.setMessage("삭제하면 그룹에 속한 즐겨찾기도 같이 삭제됩니다. 계속 하시겠습니까?")
+            	.setPositiveButton("네", new DialogInterface.OnClickListener(){
+            		public void onClick(DialogInterface dialog, int whichButton){
+            			Groups.remove(curPosition);
+                    	groupAdapter.notifyDataSetChanged();
+                    	String dirPath = getFilesDir().getAbsolutePath();
+            			Log.v(TAG, "dirPath : " + dirPath);
+            			File file = new File(dirPath + "/" + "group_" + 
+            					Groups.get(curPosition) + ".txt");
+            			if (file.exists()){file.delete();}	
+
+            			Toast.makeText(SiteManagerActivity.this, "그룹이 삭제되었습니다.", 
+                				Toast.LENGTH_SHORT).show();	
+            		}
+            				
+
+            	})
+            	.setNegativeButton("아니오", new DialogInterface.OnClickListener(){
+            		public void onClick(DialogInterface dialog, int whichButton){
+            			;
+            		}
+            	}).show();
+            	
+            	
+            	break;
+            	
+            //case R.id.btn_submit: 	// 즐겨찾기 등록
+            }	
+
+        }
+	};
+		    
 }

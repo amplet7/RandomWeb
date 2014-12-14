@@ -134,7 +134,7 @@ public class WebViewActivity extends ActionBarActivity{
 		try{
 			if( !file.exists() ) {
 				Log.v(TAG, "im in MENU_FAVOR - !file.exists()");
-				FileOutputStream fos1 = openFileOutput("group_기본그룹",Context.MODE_PRIVATE);
+				FileOutputStream fos1 = openFileOutput("group_기본그룹.txt",Context.MODE_PRIVATE);
 				String firstline = "URLs\n";
 				fos1.write(firstline.getBytes());
 				fos1.close();

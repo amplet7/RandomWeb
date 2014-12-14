@@ -10,14 +10,28 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.mymy.randomweb.SiteManagerActivity" >
 
-    <Spinner
-        android:id="@+id/spinner1"
-        
+    <LinearLayout 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp" />
+        android:orientation="horizontal"
+		android:padding="10dp">
+	    
+	    <Spinner
+	        android:id="@+id/spinner1"
+	        android:layout_width="0dp"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+	        />
 
-    "
+	    <Button 
+	        android:id="@+id/btn_delete_group"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="그룹삭제" />"
+    
+    
+    </LinearLayout>
+    
     <ListView 
         android:id="@+id/list1"
         android:layout_width="match_parent"
