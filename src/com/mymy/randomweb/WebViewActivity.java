@@ -128,13 +128,13 @@ public class WebViewActivity extends ActionBarActivity{
         r2 = -1;
         String dirPath = getFilesDir().getAbsolutePath();
 		Log.v(TAG, "dirPath : " + dirPath);
-		File file = new File(dirPath + "/URLs.txt");
+		File file = new File(dirPath + "/group_기본그룹.txt");
 		
-		// 시작 시 어플폴더에 파일이 없으면 생성 후 한줄 기록
+		// 시작 시 어플폴더에 파일이 없으면 기본그룹 파일 생성 후 한줄 기록
 		try{
 			if( !file.exists() ) {
 				Log.v(TAG, "im in MENU_FAVOR - !file.exists()");
-				FileOutputStream fos1 = openFileOutput("URLs.txt",Context.MODE_PRIVATE);
+				FileOutputStream fos1 = openFileOutput("group_기본그룹",Context.MODE_PRIVATE);
 				String firstline = "URLs\n";
 				fos1.write(firstline.getBytes());
 				fos1.close();
@@ -187,19 +187,49 @@ public class WebViewActivity extends ActionBarActivity{
 			Log.v(TAG, "dirPath : " + dirPath);
 			File file = new File(dirPath + "/URLs.txt");
 			if (file.exists()){file.delete();}
-			Log.v(TAG, "파일 있나? in MENU_DELETE " + file.exists());
+			
+			
+			java.io.File[] children = getFilesDir().listFiles();
+	        try{
+	        	Log.v(TAG, "dir : " + children.length);
+	            for(int i=0;i<children.length;i++){
+                	Log.v(TAG, "파일 : " + children[i].getName() + " +++ " + children[i].getPath());
+                	if( children[i].getName().startsWith("group_")){
+                		children[i].delete();
+                	}
+                	
+	            }
+	        }catch(Exception e){}
+			
     		return true;
     		
     	case MENU_TXTSHOW:
     		try{
-				FileInputStream fis = openFileInput("URLs.txt");
-				byte[] data = new byte[fis.available()];
-				while (fis.read(data) != -1){;}
-				fis.close();
-				String cont = new String(data);
+				
+    			children = getFilesDir().listFiles();
+    			String str1 = "";
+    			
+    	        try{
+    	        	
+    	            for(int i=0;i<children.length;i++){
+                    	Log.v(TAG, "파일 : " + children[i].getName() + " +++ " + children[i].getPath());
+                    	String name = children[i].getName();
+                    	if( name.startsWith("group_")){
+                    		str1 = str1 + "=========start==========\n" + name + "\n" ;
+                    		
+                    		FileInputStream fis = openFileInput(name);
+            				byte[] data = new byte[fis.available()];
+            				while (fis.read(data) != -1){;}
+            				fis.close();
+            				String content = new String(data);
+            				str1 = str1 + content + "\n=======end============\n";
+                    	}
+                    	
+    	            }
+    	        }catch(Exception e){}
 				
 				new AlertDialog.Builder(this).setTitle("파일내용")
-	    		.setMessage(cont)
+	    		.setMessage(str1)
 	    		.setPositiveButton("네", new DialogInterface.OnClickListener(){
 	    			public void onClick(DialogInterface dialog, int whichButton){
 	    				;

@@ -67,7 +67,8 @@ public class SiteRegisterActivity extends ActionBarActivity {
         });
         
         for(int i=0; i < files.length; i++){
-        	Groups.add(files[i]);
+        	files[i].subfiles[i].lastIndexOf(".txt");
+        	Groups.add(files[i].replaceFirst("group_", ""));
         }
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line, Groups);
         //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -124,12 +125,12 @@ public class SiteRegisterActivity extends ActionBarActivity {
             		String surl = siteUrl.getText().toString();
             		surl =  surl + "\n";
             		String saveLine = sname + " .1.1. .1.1. " + surl;
-            		
+            		Log.v(TAG, "curFileName : " + curFileName);
             		FileInputStream fis = openFileInput(curFileName);
                 	Log.v(TAG, "passed FileInputStream fis = openFileInput()");
                 	byte[] data = new byte[fis.available()];
                 	Log.v(TAG, "passed new byte[fis.available()]");
-                	while (fis.read(data) != -1){;}
+                	while (fis.read(data) != -1){;} //빈파일은 여기서 무한루프돔.
                 	
                 	String URLs = new String(data);
                 	Log.v(TAG, "URLs : " + URLs);
@@ -140,7 +141,7 @@ public class SiteRegisterActivity extends ActionBarActivity {
                 	
                 	if(URLs.indexOf(surl) == -1){ // 파일 안에 현재 url이 없을 때만 저장
                 		// surl의 줄바꿈 문자 때문에 부분주소만 겹쳐도 등록된 걸로 판별하는 오류 제거됨
-                		FileOutputStream fos = openFileOutput("URLs.txt",Context.MODE_APPEND);
+                		FileOutputStream fos = openFileOutput(curFileName,Context.MODE_APPEND);
                 		fos.write(saveLine.getBytes());
                 		Log.v(TAG, "passed fos.write(surl.getBytes());");
                 		fos.close();

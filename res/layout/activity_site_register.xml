@@ -39,16 +39,33 @@
         android:singleLine="true"
         android:layout_below="@id/text_url"  />
     
-    <Spinner
-        android:id="@+id/spinner2"
-        android:layout_width="wrap_content"
-        android:layout_marginTop = "20dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/edit_url" />
+    <LinearLayout 
+        android:id="@+id/spinnerLL"
+        android:orientation="horizontal"
+      	android:layout_width="match_parent"
+      	android:layout_height="wrap_content"
+	    android:layout_marginTop = "20dp"
+      	android:layout_below="@id/edit_url" >
+      	
+	    <Spinner
+	        android:id="@+id/spinner2"
+	        android:layout_width="0dp"
+	        android:layout_weight="1"
+	        android:layout_height="wrap_content" />
+	    
+	    <Button
+	        android:id="@+id/btn_newgroup"
+	        android:text="새그룹"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	         />
+	    
+    </LinearLayout>
     
     
     <LinearLayout 
         android:id="@+id/btnLL"
+        android:orientation="horizontal"
       	android:layout_width="match_parent"
       	android:layout_height="wrap_content"
       	android:layout_alignParentBottom="true" >
