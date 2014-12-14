@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import android.support.v7.app.ActionBarActivity;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -31,9 +32,12 @@ public class SiteRegisterActivity extends ActionBarActivity {
 	private EditText siteName;
 	private EditText siteUrl;
 	
-	ArrayList<String> Groups;
+	private ArrayList<String> Groups;
 	private int groupPosition = 0;
 	private String curFileName;
+	private Spinner spin;
+	private ArrayAdapter<String> adapter;
+	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +46,8 @@ public class SiteRegisterActivity extends ActionBarActivity {
 		
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true); // 홈 액티비티로 가는 홈 버튼 활성화
 		
+		
+		
     	siteName = (EditText)findViewById(R.id.edit_site_names);
     	siteUrl = (EditText)findViewById(R.id.edit_url);
     	
@@ -49,12 +55,13 @@ public class SiteRegisterActivity extends ActionBarActivity {
     	siteUrl.setText(curUrl); 
     	
     	//mEditText.setOnKeyListener(onKeyListener);
+    	findViewById(R.id.btn_newgroup).setOnClickListener(onClickListener1);
         findViewById(R.id.btn_submit).setOnClickListener(onClickListener1);
         findViewById(R.id.btn_cancel).setOnClickListener(onClickListener1);
         
         Groups = new ArrayList<String>();
-        Spinner spin2 = (Spinner)findViewById(R.id.spinner2);
-        spin2.setPrompt("그룹을 선택하세요");
+        spin = (Spinner)findViewById(R.id.spinner2);
+        spin.setPrompt("그룹을 선택하세요");
         ContextWrapper cw = new ContextWrapper(this);
         File dir = cw.getFilesDir();
         
@@ -66,23 +73,25 @@ public class SiteRegisterActivity extends ActionBarActivity {
 			}
         });
         
-        for(int i=0; i < files.length; i++){
-        	files[i].subfiles[i].lastIndexOf(".txt");
-        	Groups.add(files[i].replaceFirst("group_", ""));
-        }
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line, Groups);
-        //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spin2.setSelection(0);
-        spin2.setAdapter(adapter);
         
-        spin2.setOnItemSelectedListener(new OnItemSelectedListener(){
+        
+        for(int i=0; i < files.length; i++){
+        	Groups.add(files[i].replaceFirst("group_", "").replaceFirst("(.txt)$", ""));
+        }
+        adapter = new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line, Groups);
+        //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spin.setSelection(0);
+        spin.setAdapter(adapter);
+        
+        spin.setOnItemSelectedListener(new OnItemSelectedListener(){
 
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view,
 					int position, long id) {
 				// TODO Auto-generated method stub
 				groupPosition = position;
-				curFileName = files[position];
+				curFileName = "group_" + Groups.get(position) + ".txt";
+						
 			}
 
 			@Override
@@ -119,6 +128,14 @@ public class SiteRegisterActivity extends ActionBarActivity {
         @Override
         public void onClick(View v) {
             switch(v.getId()) {
+            
+            case R.id.btn_newgroup: // 새 그룹
+            	Intent intent = new Intent(SiteRegisterActivity.this, NewGroupActivity.class); 
+    			//intent.putExtra("data_name",name_input.getText().toString());  
+    		    
+            	startActivityForResult(intent, 0);
+            	break;
+            	
             case R.id.btn_submit: 	// 즐겨찾기 등록
             	try{
             		String sname = siteName.getText().toString();
@@ -149,7 +166,7 @@ public class SiteRegisterActivity extends ActionBarActivity {
                 				Toast.LENGTH_SHORT).show();
                 	}
                 	else{
-                		Toast.makeText(SiteRegisterActivity.this, "이미 추가됨", 
+                		Toast.makeText(SiteRegisterActivity.this, "이미 추가된 주소입니다.", 
                 				Toast.LENGTH_SHORT).show();
                 		
                 	}
@@ -158,17 +175,40 @@ public class SiteRegisterActivity extends ActionBarActivity {
             		System.err.println(e);
             		System.exit(1);
             	}
-            	//setResult(RESULT_OK,intent); 
             	finish();
             	
             case R.id.btn_cancel:
-            	//setResult(RESULT_OK,intent); 
             	finish();
             }
         }
 
     };
-	
-	
     
+    
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+    	Log.v(TAG, "onActivityResult");
+		switch (requestCode){
+		case 0:
+			if (resultCode == RESULT_OK){
+				Log.v(TAG, "RESULT_OK");
+				String groupName = data.getStringExtra("newgroup");
+				Log.v(TAG, "groupName : " + groupName);
+				//Log.v(TAG, "SiteReg-> onActivityRes : " + adapter.getPosition(groupName));
+				//
+				
+				Groups.add(Groups.size(), groupName);
+				
+				adapter.notifyDataSetChanged();
+				
+				spin.setSelection(Groups.size()-1);
+			} else if(resultCode == RESULT_CANCELED){
+				Log.v(TAG, "RESULT_CANCELED");
+			}
+				
+		}
+	}
+    
+    
+	
+	
 }

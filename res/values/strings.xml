@@ -17,5 +17,6 @@
     <string name="title_activity_dev_info">DevInfoActivity</string>
     <string name="title_activity_font">FontActivity</string>
     <string name="title_activity_manage_space">ManageSpaceActivity</string>
+    <string name="title_activity_new_group">NewGroupActivity</string>
 
 </resources>

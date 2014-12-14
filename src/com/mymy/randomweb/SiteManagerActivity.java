@@ -228,7 +228,7 @@ public class SiteManagerActivity extends ActionBarActivity {
 			intent1.putExtra("curUrl", splstr[1].replace("\n", "")); // without "\n"
     		Log.v(TAG, "162줄 splstr[1] : " + splstr[1].replace("\n", ""));
 			startActivityForResult(intent1, 0); 
-			// 이후 리턴값은 onActivityReslut 에서 처리
+			// 이후 리턴값은 onActivityResult 에서 처리
 			return true;
 		case 2: //delete
 			
@@ -319,79 +319,6 @@ public class SiteManagerActivity extends ActionBarActivity {
 			}
 		}
 	}
-	
-	/*
-
-	public void mOnClick(View v){
-		switch(v.getId()){
-		case R.id.btn_del:
-
-			new AlertDialog.Builder(this).setTitle("Question")
-			.setMessage("선택한 사이트를 삭제 하시겠습니까?")
-			.setPositiveButton("네", new DialogInterface.OnClickListener(){
-				public void onClick(DialogInterface dialog, int whichButton){
-					SparseBooleanArray sb = list.getCheckedItemPositions();
-					String bufferStr = new String();
-
-					try{
-						int listCount = list.getCount();
-		    			FileInputStream fis = openFileInput("URLs.txt");
-		    			BufferedReader reader = new BufferedReader(new InputStreamReader(fis));
-		    			String line = reader.readLine(); //첫 줄
-		    			bufferStr = bufferStr + line + "\n";
-		    			int i=0; // 두번째 줄부터
-		    			int j=i;
-		    			while((line = reader.readLine()) != null){
-		    				Log.v(TAG,  i + " :: " + line + " :: " +sb.size() + " :: " + bufferStr);
-		    				if (i >= listCount){break;}
-		    				Log.v(TAG, "pass1");
-		    				if(sb.get(i)){
-		    					Log.v(TAG, "pass2 : " + Items.size());
-		    					Items.remove(j);
-		    					Log.v(TAG, "pass3");
-		    					i++; // 삭제했으면 i만 증가.  ArrayList는 중간의 원소가 삭제되면, 한칸씩 왼쪽으로 밀리므로.
-		    					continue;
-		    				}
-		    				bufferStr = bufferStr + line + "\n";
-		    				i++; j++; // 삭제하지 않았다면 i, j 둘다 증가.
-		    		    }
-		    			
-		    			// 파일의 두번째 줄이 index 0
-		    			reader.close();
-		    			fis.close();
-		    			
-		    			FileOutputStream fos = openFileOutput("URLs.txt",Context.MODE_PRIVATE);
-		        		fos.write(bufferStr.getBytes());
-		        		fos.close();
-
-		    		}
-		    		catch(Exception e){
-						System.err.println(e);
-						System.exit(1);
-					}
-					
-					list.clearChoices();
-					Adapter.notifyDataSetChanged();
-					}
-
-						
-				}
-						
-
-			)
-			.setNegativeButton("아니오", new DialogInterface.OnClickListener(){
-				public void onClick(DialogInterface dialog, int whichButton){
-					;
-				}
-			}).show();
-			
-			
-			
-			
-			
-		}
-	}
-	*/
 	
 	
 	
