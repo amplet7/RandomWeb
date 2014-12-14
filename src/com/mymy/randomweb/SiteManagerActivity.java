@@ -21,6 +21,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -51,10 +52,7 @@ public class SiteManagerActivity extends ActionBarActivity {
 		
 		ContextWrapper cw = new ContextWrapper(this);
         File dir = cw.getFilesDir();
-        
-        String dirPath = dir.getAbsolutePath();
-		File newfile = new File(dirPath + "/group_재미로.txt");
-		
+        /*
 		try{
 			
 			Log.v(TAG, "im in MENU_FAVOR - !file.exists()");
@@ -70,7 +68,7 @@ public class SiteManagerActivity extends ActionBarActivity {
 			System.err.println(e);
 			System.exit(1);
 		}
-		
+		*/
 		
 		// group_ 으로 시작하는 파일목록을 스피너에 추가
 		Groups = new ArrayList<String>();
@@ -78,7 +76,7 @@ public class SiteManagerActivity extends ActionBarActivity {
 		Spinner spin1 = (Spinner)findViewById(R.id.spinner1);
 		spin1.setPrompt("그룹을 선택하세요");
 	
-        String[] files= dir.list(new FilenameFilter(){
+        final String[] files= dir.list(new FilenameFilter(){
 			@Override
 			public boolean accept(File dir, String filename) {
 				// TODO Auto-generated method stub
@@ -90,49 +88,64 @@ public class SiteManagerActivity extends ActionBarActivity {
         	Groups.add(files[i]);
         	
         }
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, Groups);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line, Groups);
+        //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spin1.setSelection(0);
         spin1.setAdapter(adapter);
         
-        Items = new ArrayList<String>();
-		String[] str1 = new String[WebViewActivity.SITE_LIMIT]; // SITE_LIMIT개까지만 랜덤 사이트 받음
-		
-        int i = 0;
-		try{
-			FileInputStream fis = openFileInput("URLs.txt");
-			BufferedReader reader = new BufferedReader(new InputStreamReader(fis));
-			String line = reader.readLine();
-			Log.v(TAG, "file 첫번째 줄 : " + line);
-			String temp1;
-			while((str1[i] = reader.readLine()) != null){
-				Log.v(TAG, "onCreate, while : " + str1[i]);
-				String[] splstr = str1[i].split(" .1.1. .1.1. ");
-				if (splstr[0].length() > 50){
-					temp1 = splstr[0].substring(0, 50) + " . . . ";
-				}else{
-					temp1 = splstr[0];
-				}
-				Items.add(temp1);
-				i++; 
-		    }
-			// 파일의 두번째 줄이 index 0
-			reader.close();
-			fis.close();
-		}
-		catch(Exception e){
-			System.err.println(e);
-			System.exit(1);
-		}
+        spin1.setOnItemSelectedListener(new OnItemSelectedListener(){
+        	public void onItemSelected(AdapterView<?> parent, View view, 
+        			int position, long id){
+        		Items = new ArrayList<String>();
+        		String[] str1 = new String[WebViewActivity.SITE_LIMIT]; // SITE_LIMIT개까지만 랜덤 사이트 받음
+        		
+                int i = 0;
+        		try{
+        			FileInputStream fis = openFileInput(files[position]);
+        			BufferedReader reader = new BufferedReader(new InputStreamReader(fis));
+        			String line = reader.readLine();
+        			Log.v(TAG, "file 첫번째 줄 : " + line);
+        			String temp1;
+        			while((str1[i] = reader.readLine()) != null){
+        				Log.v(TAG, "onCreate, while : " + str1[i]);
+        				String[] splstr = str1[i].split(" .1.1. .1.1. ");
+        				if (splstr[0].length() > 50){
+        					temp1 = splstr[0].substring(0, 50) + " . . . ";
+        				}else{
+        					temp1 = splstr[0];
+        				}
+        				Items.add(temp1);
+        				i++; 
+        		    }
+        			// 파일의 두번째 줄이 index 0
+        			reader.close();
+        			fis.close();
+        		}
+        		catch(Exception e){
+        			System.err.println(e);
+        			System.exit(1);
+        		}
 
-		Adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, Items);
-		list = (ListView)findViewById(R.id.list1);
-		list.setAdapter(Adapter);
-		list.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-		
-		list.setOnItemClickListener(mItemClickListener);
+        		Adapter = new ArrayAdapter<String>(SiteManagerActivity.this, android.R.layout.simple_list_item_1, Items);
+        		list = (ListView)findViewById(R.id.list1);
+        		list.setAdapter(Adapter);
+        		list.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+        		
+        		list.setOnItemClickListener(mItemClickListener);
 
-		registerForContextMenu(list);
+        		registerForContextMenu(list);
+        	}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parent) {
+				// TODO Auto-generated method stub
+				
+			}
+        });
+        
+        
+        
+        
 	}
 	
 	

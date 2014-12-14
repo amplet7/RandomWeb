@@ -1,17 +1,25 @@
 package com.mymy.randomweb;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
+import java.util.ArrayList;
 
 import android.support.v7.app.ActionBarActivity;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
+import android.widget.AdapterView.OnItemSelectedListener;
 
 
 public class SiteRegisterActivity extends ActionBarActivity {
@@ -22,6 +30,10 @@ public class SiteRegisterActivity extends ActionBarActivity {
 	private String curUrl = WebViewActivity.curUrl;
 	private EditText siteName;
 	private EditText siteUrl;
+	
+	ArrayList<String> Groups;
+	private int groupPosition = 0;
+	private String curFileName;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +52,45 @@ public class SiteRegisterActivity extends ActionBarActivity {
         findViewById(R.id.btn_submit).setOnClickListener(onClickListener1);
         findViewById(R.id.btn_cancel).setOnClickListener(onClickListener1);
         
+        Groups = new ArrayList<String>();
+        Spinner spin2 = (Spinner)findViewById(R.id.spinner2);
+        spin2.setPrompt("그룹을 선택하세요");
+        ContextWrapper cw = new ContextWrapper(this);
+        File dir = cw.getFilesDir();
+        
+        final String[] files= dir.list(new FilenameFilter(){
+			@Override
+			public boolean accept(File dir, String filename) {
+				// TODO Auto-generated method stub
+				return filename.startsWith("group_");
+			}
+        });
+        
+        for(int i=0; i < files.length; i++){
+        	Groups.add(files[i]);
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line, Groups);
+        //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spin2.setSelection(0);
+        spin2.setAdapter(adapter);
+        
+        spin2.setOnItemSelectedListener(new OnItemSelectedListener(){
+
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view,
+					int position, long id) {
+				// TODO Auto-generated method stub
+				groupPosition = position;
+				curFileName = files[position];
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parent) {
+				// TODO Auto-generated method stub
+				
+			}
+        	
+        });
     	
 	}
 
@@ -74,7 +125,7 @@ public class SiteRegisterActivity extends ActionBarActivity {
             		surl =  surl + "\n";
             		String saveLine = sname + " .1.1. .1.1. " + surl;
             		
-            		FileInputStream fis = openFileInput("URLs.txt");
+            		FileInputStream fis = openFileInput(curFileName);
                 	Log.v(TAG, "passed FileInputStream fis = openFileInput()");
                 	byte[] data = new byte[fis.available()];
                 	Log.v(TAG, "passed new byte[fis.available()]");
